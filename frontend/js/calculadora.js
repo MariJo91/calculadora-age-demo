@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Enviar a n8n
         showStatusMessage('Calculando... esto puede tomar unos segundos.', 'alert-info');
         // Reemplaza esta URL con la URL de tu webhook de n8n
-        const urlWebhook = 'http://localhost:5678/webhook/un-id-unico'; 
+        const urlWebhook = 'https://n8n.icc-e.org/webhook/calculate';
         try {
             const response = await fetch(urlWebhook, {
                 method: 'POST',
