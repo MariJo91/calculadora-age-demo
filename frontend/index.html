@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora AGE - GobLab Gran Canaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <img src="assets/logo-goblab.png" alt="GobLab Gran Canaria Logo" style="height: 50px;">
+        <h1 class="my-2">Calculadora de reducción de cargas administrativas</h1>
+        <p class="lead">Basada en el método simplificado (MS) del Manual oficial de la AGE</p>
+    </header>
+
+    <main class="container my-5">
+        <div class="card p-4 mb-4">
+            <h3 class="card-header">Contexto del usuario</h3>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="userName" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="userName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="userEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userService" class="form-label">Servicio/Departamento</label>
+                    <input type="text" class="form-control" id="userService">
+                </div>
+            </div>
+        </div>
+
+        <form id="calculatorForm">
+            <div class="card p-4 mb-4">
+                <h3 class="card-header">Paso 1: Análisis de la situación inicial</h3>
+                <div class="card-body">
+                    <p>Define todas las cargas que soporta el ciudadano antes de aplicar la medida de simplificación.</p>
+                    <div id="initialLoadsContainer">
+                        <div class="load-group mb-3">
+                            <label class="form-label">Carga inicial 1</label>
+                            <div class="input-group">
+                                <select class="form-select load-select" required></select>
+                                <input type="number" class="form-control load-quantity" placeholder="Cantidad" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary mt-2" id="addInitialLoad">
+                        <i class="fas fa-plus"></i> Añadir otra carga inicial
+                    </button>
+                    <hr>
+                    <div class="text-end fw-bold">Costo unitario inicial total: <span id="totalInitialCost">0,00 €</span></div>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h3 class="card-header">Paso 2: Análisis de la situación final</h3>
+                <div class="card-body">
+                    <p>Define las cargas que permanecerán o sustituirán a las iniciales tras la simplificación.</p>
+                    <div id="finalLoadsContainer">
+                        <div class="load-group mb-3">
+                            <label class="form-label">Carga final 1</label>
+                            <div class="input-group">
+                                <select class="form-select load-select" required></select>
+                                <input type="number" class="form-control load-quantity" placeholder="Cantidad" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary mt-2" id="addFinalLoad">
+                        <i class="fas fa-plus"></i> Añadir otra carga final
+                    </button>
+                    <hr>
+                    <div class="text-end fw-bold">Costo unitario final total: <span id="totalFinalCost">0,00 €</span></div>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h3 class="card-header">Paso 3: Parámetros anuales para el cálculo</h3>
+                <div class="card-body">
+                    <p>Introduce la magnitud del procedimiento para calcular el ahorro anual según la fórmula oficial: CA = CU × FR × PB</p>
+                    <div class="mb-3">
+                        <label for="procedimiento" class="form-label">Procedimiento</label>
+                        <input type="text" class="form-control" id="procedimiento" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="poblacion" class="form-label">Población (PB)</label>
+                            <input type="number" class="form-control" id="poblacion" placeholder="Ej: 1000" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="frecuencia" class="form-label">Frecuencia anual (FR)</label>
+                            <input type="number" class="form-control" id="frecuencia" placeholder="Ej: 1" min="1" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-calculator me-2"></i> CALCULAR AHORRO SEGÚN MÉTODO OFICIAL
+                </button>
+            </div>
+        </form>
+
+        <div id="status-message" class="text-center mt-3"></div>
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/calculadora.js"></script>
+</body>
+</html>

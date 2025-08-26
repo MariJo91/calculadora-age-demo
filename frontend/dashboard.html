@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GobLab Gran Canaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <img src="assets/logo-goblab.png" alt="GobLab Gran Canaria Logo" style="height: 50px;">
+        <h1 class="my-2">Dashboard de Métricas</h1>
+        <p class="lead">Resultados y métricas de la Calculadora de Cargas Administrativas</p>
+    </header>
+
+    <main class="container my-5">
+        <div id="dashboard-container">
+            <h2 class="text-center mb-4">Métricas Clave</h2>
+            <div class="row text-center mb-5">
+                <div class="col-md-6">
+                    <div class="metric-card">
+                        <h4>Total de Análisis Realizados</h4>
+                        <p id="total-analisis">0</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="metric-card">
+                        <h4>Ahorro Acumulado Total</h4>
+                        <p id="ahorro-total">0,00 €</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mb-4">Evolución de Ahorros</h2>
+            <div class="bg-light p-3 border rounded">
+                <canvas id="grafico-temporal"></canvas>
+            </div>
+
+            <h2 class="mt-5 mb-4">Top Servicios por Ahorro</h2>
+            <div id="top-servicios" class="bg-light p-3 border rounded">
+                </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
