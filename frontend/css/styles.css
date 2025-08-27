@@ -1,13 +1,13 @@
 :root {
-    /* Paleta de colores del GobLab (ajustar si es necesario) */
-    --goblab-primary: #007bff; /* Azul primario */
-    --goblab-secondary: #6c757d; /* Gris */
-    --goblab-success: #28a745; /* Verde para éxito */
-    --goblab-info: #17a2b8; /* Azul claro para info */
-    --goblab-warning: #ffc107; /* Amarillo para advertencia */
-    --goblab-danger: #dc3545; /* Rojo para errores */
-    --goblab-light: #f8f9fa; /* Blanco roto */
-    --goblab-dark: #343a40; /* Negro */
+    /* Paleta de colores del GobLab  */
+    --goblab-primary: #8E44AD; /* Un morado suave para la cabecera */
+    --goblab-secondary: #95A5A6; /* Gris más claro */
+    --goblab-success: #27AE60; /* Verde más fresco */
+    --goblab-info: #3498DB; /* Azul cielo */
+    --goblab-warning: #F1C40F; /* Amarillo desaturado */
+    --goblab-danger: #C0392B; /* Rojo ladrillo/terra, más suave que el rojo vibrante */
+    --goblab-light: #ECF0F1; /* Blanco muy suave, casi gris claro */
+    --goblab-dark: #2C3E50; /* Gris azulado oscuro, más suave que el negro puro */
 
     /* Fuentes */
     --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -15,23 +15,39 @@
 
 body {
     font-family: var(--font-family-base);
-    background-color: var(--goblab-light);
+    background-color: var(--goblab-light); /* Fondo general muy claro */
     color: var(--goblab-dark);
 }
 
+/* Este se aplica a la cabecera principal. Usará el nuevo --goblab-primary */
 .bg-primary {
     background-color: var(--goblab-primary) !important;
 }
 
+/* Botón "CALCULAR AHORRO SEGÚN MÉTODO OFICIAL" */
 .btn-success {
-    background-color: #c41e3a; /* Rojo distintivo del logo, si aplica */
-    border-color: #c41e3a;
+    background-color: var(--goblab-danger); /* Usa el nuevo rojo para el botón principal */
+    border-color: var(--goblab-danger);
+    color: white; /* Texto blanco para contraste */
 }
 
+/* Encabezados de las tarjetas (Paso 1, Paso 2, Paso 3) */
 .card-header {
-    background-color: var(--goblab-primary);
+    background-color: var(--goblab-primary); /* Usa el nuevo morado */
     color: white;
     font-weight: bold;
+}
+
+/* Otros botones (como "+ Añadir otra carga") */
+.btn-secondary {
+    background-color: var(--goblab-secondary); /* Usa el gris claro */
+    border-color: var(--goblab-secondary);
+    color: white;
+}
+
+/* Ajustes menores para elementos visuales */
+.form-control, .form-select {
+    border-color: #BDC3C7; /* Un borde gris más suave para los inputs */
 }
 
 /* Estilo para los costos totales */
@@ -41,7 +57,7 @@ body {
 
 /* Ocultar flechas en inputs numéricos */
 input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type=number]::-webkit-outer-spin-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
@@ -51,19 +67,19 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: white;
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Sombra más suave */
 }
 
 .metric-card {
-    background-color: var(--goblab-light);
-    border: 1px solid #e9ecef;
+    background-color: var(--goblab-light); /* Fondo de tarjetas de métricas más claro */
+    border: 1px solid #D7DBDD; /* Borde más suave */
     border-radius: 8px;
     padding: 1rem;
     text-align: center;
 }
 
 .metric-card h4 {
-    color: var(--goblab-primary);
+    color: var(--goblab-primary); /* Título de métrica con el nuevo morado */
     font-weight: 300;
 }
 
@@ -75,5 +91,5 @@ input[type=number]::-webkit-outer-spin-button {
 
 #top-servicios div {
     padding: 0.5rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #EAECEF; /* Líneas divisorias más suaves */
 }
