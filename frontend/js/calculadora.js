@@ -125,29 +125,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-// Enviar a n8n
-showStatusMessage('Calculando... esto puede tomar unos segundos.', 'alert-info');
-// Reemplaza esta URL con la URL de tu webhook de n8n
-const urlWebhook = 'https://n8n.icc-e.org/webhook/calculate';
-try {
-    // Aquí está el cambio clave: la data se envuelve en la clave "body"
-    const dataToSend = { body: data };
-    
-    const response = await fetch(urlWebhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
-    });
-    if (response.ok) {
-        showStatusMessage('Cálculo completado. Los resultados detallados han sido enviados a tu correo electrónico.', 'alert-success');
-    } else {
-        showStatusMessage('Error al enviar los datos. Inténtalo de nuevo.', 'alert-danger');
-    }
-} catch (error) {
-    showStatusMessage('Error de conexión. Asegúrate de que el servidor n8n esté activo.', 'alert-danger');
-    console.error('Error:', error);
-}
+        // Enviar a n8n
+        showStatusMessage('Calculando... esto puede tomar unos segundos.', 'alert-info');
+        // Reemplaza esta URL con la URL de tu webhook de n8n
+        const urlWebhook = 'https://n8n.icc-e.org/webhook/calculate';
+        try {
+            const dataToSend = { body: data };
 
+            const response = await fetch(urlWebhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend),
+            });
+            if (response.ok) {
+                showStatusMessage('Cálculo completado. Los resultados detallados han sido enviados a tu correo electrónico.', 'alert-success');
+            } else {
+                showStatusMessage('Error al enviar los datos. Inténtalo de nuevo.', 'alert-danger');
+            }
+        } catch (error) {
+            showStatusMessage('Error de conexión. Asegúrate de que el servidor n8n esté activo.', 'alert-danger');
+            console.error('Error:', error);
+        }
+    });
+
+    // Estas funciones deben estar fuera del form.addEventListener
     function getLoadsData(containerId) {
         const loads = document.getElementById(containerId).querySelectorAll('.load-group');
         const dataArray = [];
