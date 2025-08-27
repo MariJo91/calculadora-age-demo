@@ -1,0 +1,168 @@
+{
+  "name": "Calculator Main Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calculate",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d3137ab3-85c5-4156-ab9d-2ef46a780b73",
+      "webhookId": "84901979-157b-4ca0-98e9-e55889d3477b"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ahorro = $json.resultados.ahorroAnual;\nlet nivel = 'BAJO';\nif (ahorro > 50000) nivel = 'ALTO';\nelse if (ahorro > 10000) nivel = 'MEDIO';\n$json.clasificacion = nivel;\nreturn { json: $json };\n"
+      },
+      "name": "Classify Impact",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        512,
+        0
+      ],
+      "id": "20f6a893-7c1c-42a1-8ddd-4554bff1aeea"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validación y enriquecimiento\nconst data = $json.body;\n\nif (!data.procedimiento || !data.resultados?.ahorroAnual) {\n  throw new Error('Datos incompletos: faltan campos obligatorios');\n}\n\ndata.id = Date.now().toString();\ndata.timestamp = new Date().toISOString();\n\ndata.usuario = data.usuario || 'Anónimo';\ndata.servicio = data.servicio || 'N/A';\n\nreturn { json: data };\n"
+      },
+      "name": "Validate + Enrichment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        256,
+        0
+      ],
+      "id": "76d02fdb-04d9-4499-b2fc-d825c6db04fa"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = `/data/calculos-${new Date().toISOString().slice(0,10)}.csv`;\n\nconst csvLine = `${$json.id},${$json.timestamp},${$json.procedimiento},${$json.servicio},${$json.usuario},${$json.resultados.ahorroAnual},\\\"${JSON.stringify($json).replace(/\"/g, '\"\"')}\\\"\\n`;\n\nfs.appendFileSync(path, csvLine);\n\nreturn { json: $json };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "bab51013-abe7-4a93-8744-cbf13d50b3f0",
+      "name": "Save to CSV"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://n8n:5678/webhook/email-notification",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "true",
+              "value": "={{$json}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        0
+      ],
+      "id": "a7a6faa9-898d-468c-87bf-c3964098c5b4",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"OK\",\n  \"id\": \"={{$json.id}}\",\n  \"clasificacion\": \"={{$json.clasificacion}}\",\n  \"mensaje\": \"Análisis recibido y procesado\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "e932accc-bdc8-4c10-8637-8d330c09c716",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate + Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Impact": {
+      "main": [
+        [
+          {
+            "node": "Save to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate + Enrichment": {
+      "main": [
+        [
+          {
+            "node": "Classify Impact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to CSV": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "247f858e-2d98-4b60-b5bd-0334b1922231",
+  "meta": {
+    "instanceId": "c82b6d82c5e68698f04eb90aff26f6d518213142c432a723c8b2a1070d31f483"
+  },
+  "id": "V3NPQyM7HzfsmZmH",
+  "tags": []
+}
