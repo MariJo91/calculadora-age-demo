@@ -132,11 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const dataToSend = { body: data };
 
-            const response = await fetch(urlWebhook, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
-            });
+        const response = await fetch(urlWebhook, {
+             method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ body: data }), // <-- El cambio está aquí
+        });
+        
             if (response.ok) {
                 showStatusMessage('Cálculo completado. Los resultados detallados han sido enviados a tu correo electrónico.', 'alert-success');
             } else {
