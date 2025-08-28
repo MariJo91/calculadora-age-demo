@@ -108,7 +108,7 @@ document.getElementById('btnCalcular').addEventListener('click', async () => {
 
   // Envío al webhook de n8n
   try {
-    const response = await fetch('http://localhost:5678/webhook/calculate', {
+    const response = await fetch('http://localhost:5678/webhook-test/calculate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
