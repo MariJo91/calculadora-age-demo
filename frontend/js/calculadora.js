@@ -2,76 +2,125 @@
 // 🔧 Función principal de cálculo y envío
 // =======================
 
-document.getElementById('calculatorForm').addEventListener('submit', async (event) => {
-  event.preventDefault();
+// Variables contenedores
+const initialContainer = document.getElementById('initialLoadsContainer');
+const finalContainer = document.getElementById('finalLoadsContainer');
+const totalInitialCost = document.getElementById('totalInitialCost');
+const totalFinalCost = document.getElementById('totalFinalCost');
+const statusMessage = document.getElementById('status-message');
 
-  // Captura de campos obligatorios
-  const userName = document.getElementById('userName').value.trim();
-  const userEmail = document.getElementById('userEmail').value.trim();
-  const userService = document.getElementById('userService').value.trim();
-  const procedimiento = document.getElementById('procedimiento').value.trim();
-  const poblacion = parseInt(document.getElementById('poblacion').value);
-  const frecuencia = parseInt(document.getElementById('frecuencia').value);
+// Función para crear una carga
+function createLoadElement(tipo = 'Inicial') {
+  const div = document.createElement('div');
+  div.classList.add('load-group', 'mb-3');
+  div.innerHTML = `
+    <label class="form-label">Carga ${tipo}</label>
+    <div class="input-group">
+      <select class="form-select load-select" required>
+        <option value="Trámite A">Trámite A</option>
+        <option value="Trámite B">Trámite B</option>
+        <option value="Trámite C">Trámite C</option>
+      </select>
+      <input type="number" class="form-control load-quantity" placeholder="Cantidad" min="1" value="1" required>
+      <button type="button" class="btn btn-outline-danger btn-sm remove-load"><i class="fas fa-trash"></i></button>
+    </div>
+  `;
+  return div;
+}
 
-  // Validación básica
-  if (!userName || !userEmail || !procedimiento || isNaN(poblacion) || isNaN(frecuencia)) {
-    showStatusMessage('Por favor, complete todos los campos obligatorios.', 'alert-danger');
-    return;
-  }
+// Añadir carga inicial/final
+document.getElementById('addInitialLoad').addEventListener('click', () => {
+  initialContainer.appendChild(createLoadElement('Inicial'));
+});
 
-  // Cálculo de costos
-  const initialCost = calculateTotalCost('initialLoadsContainer');
-  const finalCost = calculateTotalCost('finalLoadsContainer');
+document.getElementById('addFinalLoad').addEventListener('click', () => {
+  finalContainer.appendChild(createLoadElement('Final'));
+});
 
-  if (initialCost === 0 || finalCost === 0) {
-    showStatusMessage('Asegúrese de seleccionar y especificar cantidades para las cargas iniciales y finales.', 'alert-danger');
-    return;
-  }
-
-  const ahorroUnidad = initialCost - finalCost;
-  const ahorroAnual = ahorroUnidad * frecuencia * poblacion;
-  const porcentajeReduccion = (ahorroUnidad / initialCost) * 100;
-
-  // Construcción del objeto de solicitud
-  const solicitud = {
-    id: generarID(),
-    procedimiento,
-    servicio: userService,
-    usuario: userName,
-    email: userEmail,
-    cargasIniciales: getLoadsData('initialLoadsContainer'),
-    cargasFinales: getLoadsData('finalLoadsContainer'),
-    parametros: { poblacion, frecuencia },
-    resultados: {
-      ahorroUnidad: parseFloat(ahorroUnidad.toFixed(2)),
-      ahorroAnual: parseFloat(ahorroAnual.toFixed(2)),
-      porcentajeReduccion: parseFloat(porcentajeReduccion.toFixed(2))
-    },
-    metadatos: {
-      fecha: new Date().toISOString(),
-      metodologia: "Método Simplificado (MS) - Manual AGE"
-    }
-  };
-
-  // Envío al flujo n8n
-  showStatusMessage('Calculando... esto puede tomar unos segundos.', 'alert-info');
-
-  const urlWebhook = 'https://n8n.icc-e.org/webhook/calculate';
-
-  try {
-    const response = await fetch(urlWebhook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ body: solicitud })
-    });
-
-    if (response.ok) {
-      showStatusMessage('✅ Cálculo completado. Los resultados han sido enviados a tu correo electrónico.', 'alert-success');
-    } else {
-      showStatusMessage('❌ Error al enviar los datos. Inténtalo de nuevo.', 'alert-danger');
-    }
-  } catch (error) {
-    console.error('Error de conexión:', error);
-    showStatusMessage('❌ Error de conexión. Verifica que el servidor n8n esté activo.', 'alert-danger');
+// Eliminar carga
+document.addEventListener('click', e => {
+  if (e.target.closest('.remove-load')) {
+    e.target.closest('.load-group').remove();
+    updateTotals();
   }
 });
+
+// Actualizar totales
+function updateTotals() {
+  let totalInitial = 0;
+  let totalFinal = 0;
+
+  initialContainer.querySelectorAll('.load-group').forEach(group => {
+    const qty = Number(group.querySelector('.load-quantity').value) || 0;
+    totalInitial += qty * 10; // Supongamos coste unitario 10€ para demo
+  });
+
+  finalContainer.querySelectorAll('.load-group').forEach(group => {
+    const qty = Number(group.querySelector('.load-quantity').value) || 0;
+    totalFinal += qty * 10; // Supongamos coste unitario 10€ para demo
+  });
+
+  totalInitialCost.textContent = totalInitial.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  totalFinalCost.textContent = totalFinal.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+}
+
+// Escuchar cambios en cantidad
+initialContainer.addEventListener('input', updateTotals);
+finalContainer.addEventListener('input', updateTotals);
+
+// Función para enviar formulario
+document.getElementById('btnCalcular').addEventListener('click', async () => {
+  statusMessage.textContent = 'Enviando datos...';
+  const data = {
+    usuario: document.getElementById('userName').value,
+    email: document.getElementById('userEmail').value,
+    servicio: document.getElementById('userService').value,
+    procedimiento: document.getElementById('procedimiento').value,
+    parametros: {
+      poblacion: Number(document.getElementById('poblacion').value),
+      frecuencia: Number(document.getElementById('frecuencia').value)
+    },
+    cargasIniciales: [],
+    cargasFinales: [],
+    resultados: {},
+    metadatos: { metodologia: "Método Simplificado (MS) - Manual AGE" }
+  };
+
+  // Cargas iniciales
+  initialContainer.querySelectorAll('.load-group').forEach(group => {
+    const tipo = group.querySelector('.load-select').value;
+    const cantidad = Number(group.querySelector('.load-quantity').value) || 0;
+    data.cargasIniciales.push({ tipo, coste: 10, cantidad }); // coste unitario demo 10€
+  });
+
+  // Cargas finales
+  finalContainer.querySelectorAll('.load-group').forEach(group => {
+    const tipo = group.querySelector('.load-select').value;
+    const cantidad = Number(group.querySelector('.load-quantity').value) || 0;
+    data.cargasFinales.push({ tipo, coste: 10, cantidad });
+  });
+
+  // Cálculo de ahorro
+  const totalInicial = data.cargasIniciales.reduce((sum, c) => sum + c.coste * c.cantidad, 0) * data.parametros.frecuencia * data.parametros.poblacion;
+  const totalFinal = data.cargasFinales.reduce((sum, c) => sum + c.coste * c.cantidad, 0) * data.parametros.frecuencia * data.parametros.poblacion;
+  data.resultados.ahorroAnual = totalInicial - totalFinal;
+  data.resultados.porcentajeReduccion = ((totalInicial - totalFinal) / totalInicial * 100).toFixed(2);
+
+  // Envío al webhook de n8n
+  try {
+    const response = await fetch('https://calculadora-gc.duckdns.org/webhook/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    statusMessage.textContent = `¡Análisis guardado con ID: ${result.id}!`;
+    document.getElementById('btnDescargarPDF').classList.remove('d-none');
+  } catch (err) {
+    console.error(err);
+    statusMessage.textContent = 'Error al enviar los datos. Revisa tu conexión.';
+  }
+});
+
+// Inicializar totales al cargar
+updateTotals();

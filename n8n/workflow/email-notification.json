@@ -1,0 +1,41 @@
+{
+  "name": "Email Notification",
+  "nodes": [
+    {
+      "name": "Generate PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 200],
+      "parameters": {
+        "url": "https://api.html-to-pdf.app/v1/generate",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParameters": {
+          "html": "=<html><body><h1>Análisis de Simplificación</h1><p>Procedimiento: {{$json.procedimiento}}</p><p>Ahorro: €{{$json.resultados.ahorroAnual}}</p></body></html>"
+        }
+      }
+    },
+    {
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [450, 200],
+      "parameters": {
+        "fromEmail": "goblab@grancanaria.com",
+        "toEmail": "={{$json.email || 'demo@grancanaria-goblab.org'}}",
+        "subject": "Análisis de Simplificación: {{$json.procedimiento}}",
+        "emailFormat": "html",
+        "message": "<h2>Análisis completado</h2><p>Su análisis de simplificación ha sido procesado.</p><p><strong>Ahorro estimado:</strong> €{{$json.resultados.ahorroAnual}}</p>",
+        "attachments": "={{[$binary.data]}}"
+      }
+    }
+  ],
+  "connections": {
+    "Generate PDF": {
+      "main": [[{"node": "Send Email","type": "main","index": 0}]]
+    }
+  }
+}

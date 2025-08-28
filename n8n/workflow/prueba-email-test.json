@@ -1,0 +1,35 @@
+
+{
+  "name": "Email Test Flow",
+  "nodes": [
+    {
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [250, 200]
+    },
+    {
+      "name": "Send Test Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [450, 200],
+      "parameters": {
+        "fromEmail": "mariajoseatencio.mmi@gmail.com",
+        "toEmail": "={{$json.userEmail || 'correo-prueba@dominio.com'}}",
+        "subject": "Prueba desde Calculadora AGE",
+        "emailFormat": "html",
+        "message": "<h2>Hola!</h2><p>Este es un mensaje de prueba enviado desde n8n con tu correo de prueba.</p>"
+      },
+      "credentials": {
+        "smtp": {
+          "name": "Gmail Maria"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [[{"node": "Send Test Email","type": "main","index": 0}]]
+    }
+  }
+}

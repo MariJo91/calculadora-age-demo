@@ -1,95 +1,110 @@
+/* --- Colores corporativos --- */
 :root {
-    /* Paleta de colores del GobLab  */
-    --goblab-primary: #8E44AD; /* Un morado suave para la cabecera */
-    --goblab-secondary: #95A5A6; /* Gris más claro */
-    --goblab-success: #27AE60; /* Verde más fresco */
-    --goblab-info: #3498DB; /* Azul cielo */
-    --goblab-warning: #F1C40F; /* Amarillo desaturado */
-    --goblab-danger: #C0392B; /* Rojo ladrillo/terra, más suave que el rojo vibrante */
-    --goblab-light: #ECF0F1; /* Blanco muy suave, casi gris claro */
-    --goblab-dark: #2C3E50; /* Gris azulado oscuro, más suave que el negro puro */
-
-    /* Fuentes */
-    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --color-primario: #c41e3a; /* Rojo GobLab */
+  --color-secundario: #007bff; /* Azul */
+  --color-fondo-warning: #fff3cd;
+  --color-text-warning: #856404;
+  --color-fondo-info: #d1ecf1;
+  --color-text-info: #0c5460;
+  --color-boton-purple: #6f42c1;
 }
 
+/* --- Body y tipografía --- */
 body {
-    font-family: var(--font-family-base);
-    background-color: var(--goblab-light); /* Fondo general muy claro */
-    color: var(--goblab-dark);
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
 }
 
-/* Este se aplica a la cabecera principal. Usará el nuevo --goblab-primary */
-.bg-primary {
-    background-color: var(--goblab-primary) !important;
+/* --- Encabezado --- */
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Botón "CALCULAR AHORRO SEGÚN MÉTODO OFICIAL" */
-.btn-success {
-    background-color: var(--goblab-danger); /* Usa el nuevo rojo para el botón principal */
-    border-color: var(--goblab-danger);
-    color: white; /* Texto blanco para contraste */
+header img {
+  max-height: 60px;
 }
 
-/* Encabezados de las tarjetas (Paso 1, Paso 2, Paso 3) */
+header h1 {
+  font-size: 1.8rem;
+}
+
+/* --- Fórmula oficial --- */
+div.bg-primary {
+  font-size: 0.95rem;
+}
+
+/* --- Cards --- */
+.card {
+  border-width: 2px;
+}
+
 .card-header {
-    background-color: var(--goblab-primary); /* Usa el nuevo morado */
-    color: white;
-    font-weight: bold;
+  font-size: 1rem;
 }
 
-/* Otros botones (como "+ Añadir otra carga") */
-.btn-secondary {
-    background-color: var(--goblab-secondary); /* Usa el gris claro */
-    border-color: var(--goblab-secondary);
-    color: white;
+/* Colores de cards según tipo */
+.card.bg-warning-subtle {
+  background-color: var(--color-fondo-warning);
+  color: var(--color-text-warning);
 }
 
-/* Ajustes menores para elementos visuales */
-.form-control, .form-select {
-    border-color: #BDC3C7; /* Un borde gris más suave para los inputs */
+.card.border-info {
+  border-color: var(--color-text-info);
 }
 
-/* Estilo para los costos totales */
-.fw-bold {
-    color: var(--goblab-dark);
+.card.bg-info {
+  background-color: var(--color-fondo-info);
+  color: var(--color-text-info);
 }
 
-/* Ocultar flechas en inputs numéricos */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+/* Botones personalizados */
+.btn-purple {
+  background-color: var(--color-boton-purple);
+  border-color: var(--color-boton-purple);
 }
 
-/* Estilos de dashboard */
-#dashboard-container {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+.btn-purple:hover {
+  background-color: #5930a5;
+  border-color: #5930a5;
 }
 
-.metric-card {
-    background-color: var(--goblab-light); /* Fondo de tarjetas de métricas más claro */
-    border: 1px solid #D7DBDD; /* Borde más suave */
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
+/* Input groups */
+.input-group .form-select,
+.input-group .form-control {
+  min-width: 120px;
 }
 
-.metric-card h4 {
-    color: var(--goblab-primary); /* Título de métrica con el nuevo morado */
-    font-weight: 300;
+/* Cargas dinámicas */
+.load-group {
+  position: relative;
 }
 
-.metric-card p {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--goblab-dark);
+.load-group .remove-load {
+  margin-left: 5px;
 }
 
-#top-servicios div {
-    padding: 0.5rem;
-    border-bottom: 1px solid #EAECEF; /* Líneas divisorias más suaves */
+/* Mensaje de estado */
+#status-message {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    font-size: 0.9rem;
+  }
+
+  .btn-lg {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
 }
