@@ -24,7 +24,7 @@
       "typeVersion": 1,
       "position": [450, 200],
       "parameters": {
-        "fromEmail": "goblab@grancanaria.com",
+        "fromEmail": "mariajoseatencio.mmi@gmail.com ",
         "toEmail": "={{$json.email || 'demo@grancanaria-goblab.org'}}",
         "subject": "Análisis de Simplificación: {{$json.procedimiento}}",
         "emailFormat": "html",
