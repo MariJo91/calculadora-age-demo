@@ -1,5 +1,5 @@
 {
-  "name": "Calculator Main Flow",
+  "name": "Calculator Main Flow - Final Version",
   "nodes": [
     {
       "name": "Webhook",
@@ -12,7 +12,6 @@
       }
     },
     {
-      
       "name": "Validate Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
@@ -27,7 +26,7 @@
       "typeVersion": 1,
       "position": [650, 200],
       "parameters": {
-        "jsCode": "const ahorro = $json.resultados.ahorroAnual;\nlet nivel = 'BAJO_IMPACTO';\nif (ahorro > 50000) nivel = 'ALTO_IMPACTO';\nelse if (ahorro > 10000) nivel = 'MEDIO_IMPACTO';\n$json.clasificacion = nivel;\nreturn { json: $json };"
+        "jsCode": "const ahorro = $json.resultados.ahorroAnual;\nlet nivel = 'BAJO_IMPACTO';\nif (ahorro >= 50000) nivel = 'ALTO_IMPACTO';\nelse if (ahorro >= 10000) nivel = 'MEDIO_IMPACTO';\n$json.clasificacion = nivel;\nreturn { json: $json };"
       }
     },
     {
@@ -36,19 +35,64 @@
       "typeVersion": 1,
       "position": [850, 200],
       "parameters": {
-        "jsCode": "const fs = require('fs');\ntry {\n  const csvLine = `${$json.id},${$json.timestamp},${$json.procedimiento},${$json.servicio || 'N/A'},${$json.usuario || 'Anónimo'},${$json.resultados.ahorroAnual},\"${JSON.stringify($json).replace(/\"/g, '\"\"')}\"\n`;\n  fs.appendFileSync('/data/calculos.csv', csvLine);\n} catch (err) {\n  console.error('Error guardando CSV:', err);\n}\nreturn { json: $json };"
+        "jsCode": "const fs = require('fs');\ntry {\n  const csvLine = `${$json.id},${$json.timestamp},${$json.procedimiento || 'N/A'},${$json.servicio || 'N/A'},${$json.usuario || 'Anónimo'},${$json.resultados.ahorroAnual},\"${JSON.stringify($json).replace(/\"/g, '\"\"')}\"\n`;\n  fs.appendFileSync('/data/calculos.csv', csvLine);\n} catch (err) {\n  console.error('Error guardando CSV:', err);\n}\nreturn { json: $json };"
+      }
+    },
+    {
+      "name": "Execute Notification Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1050, 200],
+      "parameters": {
+        "workflowId": "IvSeGwRAr4kUXzRC",
+        "waitForCompletion": true
       }
     }
   ],
   "connections": {
     "Webhook": {
-      "main": [[{"node": "Validate Data","type": "main","index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Validate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Validate Data": {
-      "main": [[{"node": "Classify Impact","type": "main","index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Classify Impact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Classify Impact": {
-      "main": [[{"node": "Save to CSV","type": "main","index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Save to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to CSV": {
+      "main": [
+        [
+          {
+            "node": "Execute Notification Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   }
 }

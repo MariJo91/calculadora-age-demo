@@ -1,5 +1,6 @@
+
 {
-  "name": "Email Notification",
+  "name": "Email Notification with Conditional Logic",
   "nodes": [
     {
       "name": "Generate PDF",
@@ -14,28 +15,106 @@
           "bodyContentType": "json"
         },
         "bodyParameters": {
-          "html": "=<html><body><h1>Análisis de Simplificación</h1><p>Procedimiento: {{$json.procedimiento}}</p><p>Ahorro: €{{$json.resultados.ahorroAnual}}</p></body></html>"
+          "html": "<html><body><h1>Análisis de Simplificación</h1><p>Procedimiento: {{$json.procedimiento}}</p><p>Ahorro: €{{$json.resultados.ahorroAnual}}</p></body></html>"
         }
       }
     },
     {
-      "name": "Send Email",
-      "type": "n8n-nodes-base.emailSend",
+      "name": "Branch based on Impact",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [450, 200],
       "parameters": {
-        "fromEmail": "mariajoseatencio.mmi@gmail.com ",
-        "toEmail": "={{$json.email || 'demo@grancanaria-goblab.org'}}",
-        "subject": "Análisis de Simplificación: {{$json.procedimiento}}",
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.clasificacion}}",
+              "operator": "in",
+              "value2": "ALTO_IMPACTO"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "High Impact Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [650, 100],
+      "parameters": {
+        "fromEmail": "mariajoseatencio.mmi@gmail.com",
+        "toEmail": "={{$json.email}}, gob-lab@goblab.org, directiva@goblab.org",
+        "subject": "ALERTA: Alto Ahorro - {{$json.procedimiento}}",
         "emailFormat": "html",
-        "message": "<h2>Análisis completado</h2><p>Su análisis de simplificación ha sido procesado.</p><p><strong>Ahorro estimado:</strong> €{{$json.resultados.ahorroAnual}}</p>",
+        "message": "<h2>¡Impacto Económico Alto!</h2><p>El análisis para el procedimiento <b>{{$json.procedimiento}}</b> ha revelado un ahorro anual de <b>€{{$json.resultados.ahorroAnual}}</b>.</p>",
+        "attachments": "={{[$binary.data]}}"
+      }
+    },
+    {
+      "name": "Medium Impact Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [650, 250],
+      "parameters": {
+        "fromEmail": "mariajoseatencio.mmi@gmail.com",
+        "toEmail": "={{$json.email}}, gob-lab@goblab.org",
+        "subject": "Análisis Medio - {{$json.procedimiento}}",
+        "emailFormat": "html",
+        "message": "<h2>Análisis completado</h2><p>Su análisis de simplificación para <b>{{$json.procedimiento}}</b> ha sido procesado.</p><p><b>Ahorro estimado:</b> €{{$json.resultados.ahorroAnual}}</p>",
+        "attachments": "={{[$binary.data]}}"
+      }
+    },
+    {
+      "name": "Low Impact Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [650, 400],
+      "parameters": {
+        "fromEmail": "mariajoseatencio.mmi@gmail.com",
+        "toEmail": "={{$json.email}}",
+        "subject": "Análisis completado - {{$json.procedimiento}}",
+        "emailFormat": "html",
+        "message": "<h2>Análisis completado</h2><p>Su análisis de simplificación para <b>{{$json.procedimiento}}</b> ha sido procesado.</p><p><b>Ahorro estimado:</b> €{{$json.resultados.ahorroAnual}}</p>",
         "attachments": "={{[$binary.data]}}"
       }
     }
   ],
   "connections": {
     "Generate PDF": {
-      "main": [[{"node": "Send Email","type": "main","index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Branch based on Impact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch based on Impact": {
+      "main": [
+        [
+          {
+            "node": "High Impact Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Medium Impact Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Low Impact Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   }
 }
