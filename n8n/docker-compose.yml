@@ -6,7 +6,7 @@ services:
     ports:
       - "5678:5678"  # Puerto local para pruebas
     environment:
-      - N8N_HOST=5mpl9k5z-5678.use2.devtunnels.ms
+      - N8N_HOST=5mpl9k5z-8080.use2.devtunnels.ms
       - N8N_PROTOCOL=https
       - N8N_PORT=5678
       - WEBHOOK_URL=https://5mp1g9k5-8080.use2.devunnels.ms/
