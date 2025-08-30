@@ -37,14 +37,15 @@ const statusMessage = document.getElementById('status-message');
 // Función para crear una carga
 function createLoadElement(tipo = 'Inicial') {
   const div = document.createElement('div');
-  div.classList.add('load-group', 'mb-3');
+  div.classList.add('load-group', 'mb-3', 'd-flex', 'align-items-center');
   div.innerHTML = `
-    <label class="form-label">Carga ${tipo}</label>
     <div class="input-group">
+      <label class="form-label d-block me-3">Carga ${tipo} ${document.querySelectorAll('.load-group').length + 1}</label>
       <select class="form-select load-select" required></select>
       <input type="number" class="form-control load-quantity" placeholder="Cantidad" min="1" value="1" required>
       <button type="button" class="btn btn-outline-danger btn-sm remove-load"><i class="fas fa-trash"></i></button>
     </div>
+    <div class="load-cost-display ms-3 fw-bold">0,00 €</div>
   `;
   
   // Rellenar el menú desplegable con datos del Manual AGE
@@ -52,7 +53,7 @@ function createLoadElement(tipo = 'Inicial') {
   costos_cargas_administrativas.forEach(carga => {
     const option = document.createElement('option');
     option.value = carga.costo;
-    option.textContent = carga.nombre;
+    option.textContent = `${carga.nombre} (${carga.costo.toFixed(2)} €)`;
     select.appendChild(option);
   });
   
@@ -67,15 +68,31 @@ function createLoadElement(tipo = 'Inicial') {
   return div;
 }
 
+// Función para actualizar el costo individual de una carga
+function updateSingleLoadCost(event) {
+  const group = event.target.closest('.load-group');
+  const qty = Number(group.querySelector('.load-quantity').value) || 0;
+  const costo = Number(group.querySelector('.load-select').value) || 0;
+  const singleCostDisplay = group.querySelector('.load-cost-display');
+  const total = qty * costo;
+  singleCostDisplay.textContent = total.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+}
+
 // Añadir carga inicial/final
 document.getElementById('addInitialLoad').addEventListener('click', () => {
-  initialContainer.appendChild(createLoadElement('Inicial'));
-  updateTotals(); // Actualizar totales después de añadir
+  const newLoad = createLoadElement('Inicial');
+  initialContainer.appendChild(newLoad);
+  newLoad.querySelector('.load-select').addEventListener('change', updateSingleLoadCost);
+  newLoad.querySelector('.load-quantity').addEventListener('input', updateSingleLoadCost);
+  updateTotals();
 });
 
 document.getElementById('addFinalLoad').addEventListener('click', () => {
-  finalContainer.appendChild(createLoadElement('Final'));
-  updateTotals(); // Actualizar totales después de añadir
+  const newLoad = createLoadElement('Final');
+  finalContainer.appendChild(newLoad);
+  newLoad.querySelector('.load-select').addEventListener('change', updateSingleLoadCost);
+  newLoad.querySelector('.load-quantity').addEventListener('input', updateSingleLoadCost);
+  updateTotals();
 });
 
 // Eliminar carga
@@ -172,7 +189,15 @@ document.getElementById('btnCalcular').addEventListener('click', async () => {
 
 // Inicializar la primera carga al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-  initialContainer.appendChild(createLoadElement('Inicial'));
-  finalContainer.appendChild(createLoadElement('Final'));
+  const initialLoad = createLoadElement('Inicial');
+  initialContainer.appendChild(initialLoad);
+  initialLoad.querySelector('.load-select').addEventListener('change', updateSingleLoadCost);
+  initialLoad.querySelector('.load-quantity').addEventListener('input', updateSingleLoadCost);
+
+  const finalLoad = createLoadElement('Final');
+  finalContainer.appendChild(finalLoad);
+  finalLoad.querySelector('.load-select').addEventListener('change', updateSingleLoadCost);
+  finalLoad.querySelector('.load-quantity').addEventListener('input', updateSingleLoadCost);
+
   updateTotals();
 });
