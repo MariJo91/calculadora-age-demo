@@ -6,10 +6,15 @@ services:
     ports:
       - "5678:5678"  # Puerto local para pruebas
     environment:
-      - N8N_HOST=localhost
+      - N8N_HOST=5mpl9k5z-5678.use2.devtunnels.ms
       - N8N_PROTOCOL=http
       - N8N_PORT=5678
+      - WEBHOOK_URL=https://5mpl9k5z-5678.use2.devtunnels.ms/
+      - N8N_CORS_ALLOW_ORIGIN=https://calculadora-age-demo.netlify.app
       - GENERIC_TIMEZONE=Atlantic/Canary
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+
     volumes:
       - ./n8n-data:/home/node/.n8n
       - ./data:/data
