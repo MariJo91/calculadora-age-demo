@@ -172,7 +172,7 @@ document.getElementById('btnCalcular').addEventListener('click', async () => {
 
   // Envío al webhook de n8n
   try {
-    const webhookURL = 'https://5mpl9k5z-5678.use2.devtunnels.ms/webhook/calculate';
+    const webhookURL = 'https://5mpl9k5z-8080.use2.devtunnels.ms/api/calculate';
     const response = await fetch(webhookURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
