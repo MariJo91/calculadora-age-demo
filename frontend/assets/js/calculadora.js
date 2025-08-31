@@ -175,7 +175,7 @@ document.getElementById('btnCalcular').addEventListener('click', async () => {
   // Envío al webhook de n8n
   try {
 
-    const webhookURL = 'https://n8n.icc-e.org/webhook-test/ea631f16-0ad3-4c6e-bd6c-af028552ba81'
+    const webhookURL = 'https://n8n.icc-e.org/webhook/calculate'
     const response = await fetch(webhookURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
