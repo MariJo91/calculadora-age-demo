@@ -4,26 +4,25 @@ services:
     image: n8nio/n8n
     restart: always
     ports:
-      - "5678:5678"  # Puerto local para pruebas
+      - "5678:5678"
     environment:
-      - N8N_HOST=5mpl9k5z-8080.use2.devtunnels.ms
-      - N8N_PROTOCOL=https
+      - N8N_HOST=matencio
+      - N8N_PROTOCOL=http
       - N8N_PORT=5678
-      - WEBHOOK_URL=https://5mp1g9k5-8080.use2.devunnels.ms/
-      - N8N_CORS_ALLOW_ORIGIN=https://calculadora-age-demo.netlify.app
+      - WEBHOOK_URL=http://localhost:5678/webhook/calculate
       - GENERIC_TIMEZONE=Atlantic/Canary
-      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_RUNNERS_ENABLED=true
-
     volumes:
       - ./n8n-data:/home/node/.n8n
       - ./data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`matencio`)"
 
   nginx:
     image: nginx:stable
     ports:
       - "8080:80"
     volumes:
-      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - n8n
