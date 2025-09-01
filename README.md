@@ -1,3 +1,4 @@
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/a23c46fd-13c1-4a85-a6cf-9bca120abf85" />
 # 📘 Calculadora AGE – Estimación de Reducción de Cargas Administrativas
 
 Proyecto de arquitectura pública para el cálculo del ahorro anual derivado de la simplificación de trámites, basado en el **Método de Costes Estándar (AGE)**.
@@ -35,11 +36,11 @@ El flujo de trabajo automatizado en n8n procesa la información en una secuencia
 ---
 
 ## 📸 Capturas de Pantalla
-
+<img width="1241" height="607" alt="Image" src="https://github.com/user-attachments/assets/b49048de-504f-47b0-a185-5518b65e00c0" />
 * **Interfaz de cálculo**
-    ![Captura de la calculadora AGE con campos de entrada y cargas iniciales](assets/calculadora-age.png)
+<img width="1171" height="777" alt="Image" src="https://github.com/user-attachments/assets/472861e6-9af0-44b4-827f-f9f557ed3987" />
 * **Diagrama de flujo de n8n**
-    ![Diagrama del flujo de datos con nodos Webhook, Validación, Clasificación y Google Sheets](assets/flujo-n8n.png)
+    
 
 ---
 
