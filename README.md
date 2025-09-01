@@ -35,7 +35,7 @@ El flujo de trabajo automatizado en n8n procesa la información en una secuencia
 
 ---
 
-## 📸 Capturas de Pantalla
+## 📸 Interfaz
 <img width="1241" height="607" alt="Image" src="https://github.com/user-attachments/assets/b49048de-504f-47b0-a185-5518b65e00c0" />
 * **Interfaz de cálculo**
 <img width="1171" height="777" alt="Image" src="https://github.com/user-attachments/assets/472861e6-9af0-44b4-827f-f9f557ed3987" />
