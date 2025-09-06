@@ -175,7 +175,7 @@ document.getElementById('btnCalcular').addEventListener('click', async () => {
   // Envío al webhook de n8n
   try {
 
-    const webhookURL = 'https://n8n.tilingoo.com/webhook/calculate'
+    const webhookURL = 'https://n8n.icc-e.org/webhook/calculate'
     const response = await fetch(webhookURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
