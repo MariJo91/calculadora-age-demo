@@ -1,4 +1,4 @@
-<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/a23c46fd-13c1-4a85-a6cf-9bca120abf85" />
+<img width="1857" height="565" alt="Image" src="https://github.com/user-attachments/assets/5dc72cc8-71c2-480a-8441-41a8cfe7c282" />
 # 📘 Calculadora AGE – Estimación de Reducción de Cargas Administrativas
 
 Proyecto de arquitectura pública para el cálculo del ahorro anual derivado de la simplificación de trámites, basado en el **Método de Costes Estándar (AGE)**.
