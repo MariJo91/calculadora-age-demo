@@ -11,12 +11,12 @@ Facilitar a equipos municipales y de la administración pública una herramienta
 ## 🚀 Despliegue y entornos
 
 - Frontend institucional:
-calculadoragrancanariagoblab.netlify.app
+https://calculadoragrancanariagoblab.netlify.app/
 Desplegado en Netlify, con diseño adaptado a la estética de GoBLab Gran Canaria.
 
 - Automatización de flujos (n8n):
 Subdominio activo en producción:
-https://grancanaria.goblab.com
+grancanaria.goblab.com
 Instancia dockerizada y validada por el equipo técnico.
 
 ## 🧪 Flujo funcional
