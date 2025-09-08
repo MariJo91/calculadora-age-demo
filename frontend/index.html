@@ -3,110 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - GobLab Gran Canaria</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-        .login-container h1 {
-            color: #ff6d5a;
-            margin-bottom: 20px;
-        }
-        .login-container p {
-            color: #606266;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #409eff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .login-btn:hover {
-            background-color: #3682c7;
-        }
-        .message {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .links-container {
-            margin-top: 20px;
-        }
-        .links-container a {
-            color: #409eff;
-            text-decoration: none;
-            font-size: 14px;
-            margin: 0 10px;
-        }
-        .links-container a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Calculadora AGE - Reducción de Cargas Administrativas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="login-container">
-        <h1>GobLab Gran Canaria</h1>
-        <p>Metodología Manual AGE y Desglose completo de cálculo</p>
-        <div id="message" class="message" style="display: none;"></div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="contrasena">Contraseña</label>
-                <input type="password" id="contrasena" required>
-            </div>
-            <button type="submit" class="login-btn">Ingresar</button>
-        </form>
-        <div class="links-container">
-            <a href="#">¿Olvidaste la contraseña?</a>
-            <a href="#">Registrarse</a>
-        </div>
+
+    <header class="bg-danger text-white text-center py-3">
+        <img src="assets/logo-goblab.png" alt="Logo institucional" class="mb-2" style="height: 50px;">
+        <h1 class="text-uppercase fw-bold fs-4">Calculadora de reducción de cargas administrativas</h1>
+        <p class="mb-0 small">Método Simplificado (MS) - Manual oficial AGE, Consejo de Ministros 19/09/2014</p>
+    </header>
+
+    <div class="bg-primary text-white text-center py-2 fw-semibold">
+        <span>METODOLOGÍA OFICIAL:</span> CA = CU × FR × PB | <em>Ahorro = Costo Inicial - Costo Final</em>
     </div>
-    <script src="app.js"></script>
+
+    <main class="container my-4">
+
+        <div class="card bg-warning-subtle border-warning mb-4">
+            <div class="card-header fw-bold">📜 Base normativa</div>
+            <div class="card-body">
+                <p>Este cálculo se basa en el método simplificado (MS) aprobado por el Consejo de Ministros el 19/09/2014, publicado en el Manual oficial de la AGE (págs. 77–80).</p>
+            </div>
+        </div>
+
+        <div class="card border-info mb-4">
+            <div class="card-header bg-info text-white fw-bold">Contexto del usuario</div>
+            <div class="card-body">
+                <p>Por favor, completa tus datos para generar la solicitud personalizada.</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="userName" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="userName" placeholder="Ej: María José Atencio" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="userEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="Ej: maria@municipio.gob.ve" required>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label for="userService" class="form-label">Servicio o departamento</label>
+                    <input type="text" class="form-control" id="userService" placeholder="Ej: Dirección de Catastro">
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-danger text-white fw-bold">Paso 1: Análisis de la situación inicial</div>
+            <div class="card-body">
+                <p>Selecciona las cargas administrativas que soporta el ciudadano antes de la simplificación.</p>
+                <div id="initialLoadsContainer">
+                    </div>
+                <button type="button" class="btn btn-danger mt-2" id="addInitialLoad">
+                    <i class="fas fa-plus"></i> Añadir otra carga inicial
+                </button>
+                <hr>
+                <div class="text-end text-success fw-bold">Costo inicial total: <span id="totalInitialCost">0,00 €</span></div>
+            </div>
+        </div>
+
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-danger text-white fw-bold">Paso 2: Análisis de la situación final</div>
+            <div class="card-body">
+                <p>Selecciona las cargas que permanecerán o sustituirán a las iniciales tras la simplificación.</p>
+                <div id="finalLoadsContainer">
+                    </div>
+                <button type="button" class="btn btn-danger mt-2" id="addFinalLoad">
+                    <i class="fas fa-plus"></i> Añadir otra carga final
+                </button>
+                <hr>
+                <div class="text-end text-warning fw-bold">Costo final total: <span id="totalFinalCost">0,00 €</span></div>
+            </div>
+        </div>
+
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-danger text-white fw-bold">Paso 3: Parámetros anuales</div>
+            <div class="card-body">
+                <p>Introduce los parámetros para calcular el ahorro administrativo:</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="poblacion" class="form-label">Población afectada (PB)</label>
+                        <input type="number" class="form-control" id="poblacion" placeholder="Ej: 1000" min="1" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="frecuencia" class="form-label">Frecuencia anual (FR)</label>
+                        <input type="number" class="form-control" id="frecuencia" placeholder="Ej: 1" min="1" required>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label for="procedimiento" class="form-label">Descripción del procedimiento</label>
+                    <input type="text" class="form-control" id="procedimiento" placeholder="Ej: Solicitud de licencia urbanística" required>
+                </div>
+                <div class="mt-3">
+                    <label for="expedientes" class="form-label">Nº de expedientes anuales</label>
+                    <input type="number" class="form-control" id="expedientes" placeholder="Ej: 2020" min="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 mb-4">
+            <button type="submit" class="btn btn-success btn-lg" id="btnCalcular">
+                <i class="fas fa-calculator me-2"></i> CALCULAR AHORRO
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-lg d-none" id="btnDescargarPDF">
+                <i class="fas fa-file-pdf me-2"></i> DESCARGAR PDF
+            </button>
+        </div>
+
+        <div id="status-message" class="text-center mt-3"></div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/calculadora.js"></script>
 </body>
 </html>
