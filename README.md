@@ -1,51 +1,51 @@
-<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/a23c46fd-13c1-4a85-a6cf-9bca120abf85" />
-# 📘 Calculadora AGE – Estimación de Reducción de Cargas Administrativas
+<img width="1857" height="565" alt="Image" src="https://github.com/user-attachments/assets/5dc72cc8-71c2-480a-8441-41a8cfe7c282" />
 
-Proyecto de arquitectura pública para el cálculo del ahorro anual derivado de la simplificación de trámites, basado en el **Método de Costes Estándar (AGE)**.
+## 📘 Calculadora AGE – Estimación de Reducción de Cargas Administrativas
+
+Esta aplicación permite calcular el ahorro administrativo mediante el Método Simplificado (MS) aprobado por el Consejo de Ministros el 19/09/2014, conforme al Manual oficial de la AGE (págs. 77–80). Está diseñada para facilitar la generación de solicitudes personalizadas desde administraciones públicas, alineando la experiencia institucional con los estándares de innovación de GoBLab Gran Canaria.
 
 ## 🧭 Objetivo
 
 Facilitar a equipos municipales y de la administración pública una herramienta accesible para estimar el **ahorro económico** generado por la digitalización de trámites. La arquitectura es modular y replicable.
 
-## 🔗 Demo en línea
+## 🚀 Despliegue y entornos
 
-[calculadora-age-demo.netlify.app](https://calculadora-age-demo.netlify.app)
+- Frontend institucional:
+https://calculadoragrancanariagoblab.netlify.app/
+Desplegado en Netlify, con diseño adaptado a la estética de GoBLab Gran Canaria.
 
----
+- Automatización de flujos (n8n):
+Subdominio activo en producción:
+grancanaria.goblab.com
+Instancia dockerizada y validada por el equipo técnico.
 
-## 🧱 Arquitectura
+## 🧪 Flujo funcional
+- Ingreso de datos del usuario
+- Nombre completo
+- Correo electrónico
+- Servicio o departamento
+- Análisis de cargas administrativas
+- Paso 1: Cargas iniciales
+- Paso 2: Cargas finales
+- Paso 3: Parámetros anuales (PB, FR, CU)
+- Cálculo automático del ahorro
+- Fórmula: CA = CU × FR × PB
+- Ahorro = Costo Inicial − Costo Final
+- Generación de PDF institucional
+- Integración con n8n vía webhook
+- Descarga disponible tras validación
 
-Este proyecto está construido con una arquitectura "sin servidor" (Serverless) utilizando herramientas de código abierto:
+## 🎨 Estética institucional
+- Paleta de colores basada en GoBLab Gran Canaria:
+- Azul oscuro: #003366
+- Azul claro: #00AEEF
+- Blanco: #FFFFFF
+- Amarillo institucional: #FFCC00
+- Tipografía: 'Segoe UI', 'Arial', sans-serif
+- Logo institucional integrado en el encabezado
 
-* **Frontend**: Interfaz de cálculo en **Netlify** (HTML, CSS y JavaScript).
-* **Backend**: Orquestación y lógica de negocio en **n8n**, desplegado en un **VPS de DigitalOcean**.
-* **Proxy Inverso**: **Traefik** para el enrutamiento y **Cloudflare Tunnel** para asegurar el tráfico con HTTPS automático.
-* **Persistencia**: **Google Sheets** para el almacenamiento seguro de datos, reemplazando la escritura en un archivo local (`.csv`) por restricciones de seguridad del entorno.
 
----
+🏛️ Institución
+Este proyecto forma parte del ecosistema de innovación pública impulsado por GoBLab Gran Canaria, con enfoque en la replicabilidad técnica y la transferencia institucional entre municipios.
 
-## 📊 Flujo de Datos
 
-El flujo de trabajo automatizado en n8n procesa la información en una secuencia de nodos:
-
-1.  **`Webhook`**: Recibe una solicitud `POST` con los datos del formulario de la calculadora.
-2.  **`Validation Data`**: Valida que los datos clave estén presentes (`procedimiento`, `ahorroAnual`) y en el formato correcto. Añade metadatos como `ID` y `timestamp` para trazabilidad.
-3.  **`Clasify Impact`**: Clasifica el ahorro anual en categorías de impacto: **Alto**, **Medio** o **Bajo**.
-4.  **`Google Sheets`**: Almacena cada cálculo como una nueva fila en una hoja de cálculo, garantizando la persistencia de los datos de forma segura.
-
----
-
-## 📸 Interfaz
-<img width="1241" height="607" alt="Image" src="https://github.com/user-attachments/assets/b49048de-504f-47b0-a185-5518b65e00c0" />
-* **Interfaz de cálculo**
-<img width="1171" height="777" alt="Image" src="https://github.com/user-attachments/assets/472861e6-9af0-44b4-827f-f9f557ed3987" />
-* **Diagrama de flujo de n8n**
-    
-
----
-
-## 📌 Próximos Pasos
-
-* Desarrollar un segundo flujo de trabajo en n8n para la **generación y envío de informes PDF** a los usuarios por correo electrónico.
-* Explorar soluciones de almacenamiento alternas para la persistencia de datos (ej. bases de datos como PostgreSQL).
-* Mejorar la documentación técnica para la replicación del proyecto en entornos municipales.
