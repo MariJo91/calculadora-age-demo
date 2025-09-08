@@ -3,13 +3,13 @@
   --color-primario: #003366;       /* Azul oscuro GoBLab */
   --color-secundario: #00AEEF;     /* Azul claro GoBLab */
   --color-acento: #FFCC00;         /* Amarillo institucional */
+  --color-fondo: #ffffff;          /* Fondo blanco */
+  --color-texto: #212529;
   --color-fondo-warning: #fff3cd;
   --color-text-warning: #856404;
   --color-fondo-info: #d1ecf1;
   --color-text-info: #0c5460;
   --color-boton-purple: #6f42c1;
-  --color-texto: #212529;
-  --color-fondo: #f8f9fa;
 }
 
 /* === Tipografía y base === */
@@ -26,8 +26,7 @@ header {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--color-primario);
-  color: white;
+  background-color: transparent;
   padding: 1rem;
 }
 
@@ -38,7 +37,18 @@ header img {
 header h1 {
   font-size: 1.8rem;
   font-weight: bold;
-  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.text-azul-claro {
+  color: var(--color-secundario);
+}
+
+.bg-azul-oscuro {
+  background-color: var(--color-primario);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
 }
 
 /* === Fórmula oficial === */
