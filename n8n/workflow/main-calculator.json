@@ -1,34 +1,765 @@
 {
-  "name": "Calculator Main Flow",
+  "name": "Calculadora AGE goblab",
   "nodes": [
     {
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
       "parameters": {
+        "httpMethod": "POST",
         "path": "calculate",
-        "httpMethod": "POST"
+        "responseMode": "lastNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2528,
+        896
+      ],
+      "id": "ccdc5969-5171-42a8-b3fe-62848ab76719",
+      "name": "Webhook",
+      "webhookId": "bace184d-589e-471c-802f-c5056205d113"
+    },
+    {
+      "parameters": {
+        "content": "## 🧭 Webhook – Entrada desde Netlify\n\nRecibe JSON plano desde:  \n🔗 https://calculadoragrancanariagoblab.netlify.app/\n\nEspera campos como:  \n• procedimiento  \n• resultados.ahorroAnual  \n• usuario, servicio, email\n",
+        "height": 288,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2640,
+        592
+      ],
+      "id": "f5bb95b7-5fd1-4392-8ef5-ebf1de8bc982",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ✅ Validation Data\n\nValida que el JSON tenga los campos minimos.\n\nUsa `$json.body` porque el frontend envía el objeto encapsulado.  \nAgrega `id` y `timestamp` para trazabilidad.\n\n→ Si falta algo, lanza: “Datos incompletos o ahorro inválido”\n",
+        "height": 288,
+        "width": 288,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2432,
+        1056
+      ],
+      "id": "a54a01da-9556-429c-bfef-fa398662d5d4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 📊 Classify Impact\n\nClasifica el nivel de ahorro anual:  \n• ALTO → > 50.000 €  \n• MEDIO → > 10.000 €  \n• BAJO → ≤ 10.000 €\n\nAgrega el campo `clasificacion` al JSON para usarlo en el CSV y en el correo.",
+        "height": 256,
+        "width": 272,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1968,
+        592
+      ],
+      "id": "128452f7-e6fd-41c6-b375-2261e7248574",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 📄 Registro en Google Sheets\n\nEste nodo reemplaza al antiguo `Save to CSV`.  \nAlmacena cada simulación como una nueva fila en una hoja de cálculo.\n\n⚠️ Incluye ID, timestamp, usuario, ahorro y JSON completo.\n",
+        "height": 288,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1392,
+        448
+      ],
+      "id": "07fa21b1-2b63-4c49-89df-ac905649adf6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## WorkFlow Calculadora AGE Demo",
+        "height": 1296,
+        "width": 3600,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3200,
+        384
+      ],
+      "id": "e6d88f56-c7c5-4159-835a-089704fc741a",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# Generación de Informe de Simplificación AGE\n## Objetivo: Automatizar la generación de un informe PDF de cada solicitud recibida, incluyendo datos del solicitante, parámetros y cálculos de impacto, y enviar el PDF por correo.",
+        "height": 196,
+        "width": 3594
+      },
+      "id": "82d9405c-ce00-40eb-b280-dcd118ac231f",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3120,
+        -272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": "={{ false }}",
+              "responseFormat": "file",
+              "outputPropertyName": "pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -592,
+        992
+      ],
+      "id": "c9a47c72-8350-4f5b-9718-ccb89bdf79ac",
+      "name": "Descargar PDF desde URL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1sWqSx21CI8YV8AQ",
+          "name": "Header Auth PDFco"
+        }
       }
     },
     {
-      "name": "Validate Data",
-      "type": "n8n-nodes-base.code",
       "parameters": {
-        "jsCode": "// Validación rápida\nconst data = $json.body;\nif (!data.procedimiento || !data.resultados) {\n  throw new Error('Datos incompletos');\n}\ndata.id = Date.now().toString();\ndata.timestamp = new Date().toISOString();\nreturn { json: data };"
+        "method": "POST",
+        "url": "https://api.pdf.co/v1/pdf/convert/from/html",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "html",
+              "value": "={{ $json.final_html }}"
+            },
+            {
+              "name": "name",
+              "value": "={{ $json.fileName }}"
+            },
+            {
+              "name": "async",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        992
+      ],
+      "id": "529dbbff-7874-429f-9774-c16627ef7168",
+      "name": "Crear PDF en PDF.co",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1sWqSx21CI8YV8AQ",
+          "name": "Header Auth PDFco"
+        }
       }
     },
     {
-      "name": "Classify Impact",
-      "type": "n8n-nodes-base.code",
       "parameters": {
-        "jsCode": "const ahorro = $json.resultados.ahorroAnual;\nlet nivel = 'BAJO';\nif (ahorro > 50000) nivel = 'ALTO';\nelse if (ahorro > 10000) nivel = 'MEDIO';\n$json.clasificacion = nivel;\nreturn { json: $json };"
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Function Node: texto personalizado + recipients según clasificación\nlet mensaje;\nconst cls = ($json.clasificacion || '').toString().trim().toUpperCase();\n\n// lista de destinatarios\nconst recipients = [];\n\n// añadir solicitante si existe\nif ($json.email) {\n  recipients.push($json.email);\n}\n\nswitch (cls) {\n  case 'BAJO':\n    mensaje = 'Este procedimiento tiene un impacto bajo. No requiere acciones urgentes.';\n    // solo solicitante (si existe)\n    break;\n  case 'MEDIO':\n    mensaje = 'Este procedimiento tiene un impacto medio. Se recomienda una revisión detallada.';\n    recipients.push('goblab@grancanaria.com');\n    break;\n  case 'ALTO':\n    mensaje = 'Este procedimiento tiene un impacto alto. Es prioritario considerarlo en la simplificación.';\n    recipients.push('goblab@grancanaria.com');\n    recipients.push('directiva@grancanaria.com'); // sustituye por el email real de directiva\n    break;\n  default:\n    mensaje = 'Gracias por su solicitud. Nuestro equipo revisará su caso.';\n}\n\nreturn {\n  json: {\n    ...$json,\n    textoPersonalizado: mensaje,\n    recipients: recipients.join(', ')\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        992
+      ],
+      "id": "473fdb04-68f5-4c21-9b10-85dab32d5c3d",
+      "name": "Function Node"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1b9938e4-0187-4205-bf90-3fdc8c4bedab",
+              "name": "final_html",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            },
+            {
+              "id": "3939b6ee-9b04-441c-b34a-fd382b238a48",
+              "name": "fileName",
+              "value": "={{ 'informe_' + $json.id + '.pdf' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -976,
+        992
+      ],
+      "id": "19b27edd-f3f6-43c9-98b5-3964ff8676dd",
+      "name": "Preparar PDF"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Validacion Data (normaliza email y agrega id/timestamp)\nconst data = $json.body || {};\nconst ahorro = Number(data?.resultados?.ahorroAnual);\n\nif (typeof data.procedimiento !== 'string' || !Number.isFinite(ahorro)) {\n  throw new Error('Datos incompletos o ahorro inválido');\n}\n\ndata.resultados = data.resultados || {};\ndata.resultados.ahorroAnual = ahorro;\ndata.id = Date.now().toString();\ndata.timestamp = new Date().toISOString();\n\n// Normalizar email: acepta \"email\" o \"Email\" y lo deja en minúsculas\nconst rawEmail = data.email || data.Email || '';\ndata.email = rawEmail ? String(rawEmail).trim().toLowerCase() : '';\n\nreturn { json: data };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2320,
+        896
+      ],
+      "id": "785886b3-bfe7-4e7f-a9d3-0b48cb4e6ca2",
+      "name": "Validacion Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "af840bad-1706-445d-8ee0-3b6d98bdd19e",
+              "name": "ID",
+              "value": "={{$json.id}}",
+              "type": "string"
+            },
+            {
+              "id": "594261b9-2ca8-47a9-ad19-a078af4fc81e",
+              "name": "Timestamp",
+              "value": "={{$json.timestamp}}",
+              "type": "string"
+            },
+            {
+              "id": "330a2d9c-4fc5-40df-a89b-c9e7d0dc92b9",
+              "name": "Usuario",
+              "value": "={{$json.usuario}}",
+              "type": "string"
+            },
+            {
+              "id": "4d8b0d3e-079f-4599-ae19-6060e7686c03",
+              "name": "email",
+              "value": "={{ $json.email || $json.Email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "6e364b0e-547b-4a24-a9b2-b3da1ec58eab",
+              "name": "Servicio",
+              "value": "={{$json.servicio}}",
+              "type": "string"
+            },
+            {
+              "id": "e0f54209-1b15-4643-a124-81a3cf0dbff7",
+              "name": "Procedimiento",
+              "value": "={{$json.procedimiento}}",
+              "type": "string"
+            },
+            {
+              "id": "67cae4bf-0945-4c34-b567-ee6189438ce5",
+              "name": "Ahorro Anual",
+              "value": "={{$json.resultados.ahorroAnual}}",
+              "type": "string"
+            },
+            {
+              "id": "2b55ad73-68d6-439f-b455-f4ff085fb7f0",
+              "name": "Datos JSON",
+              "value": "={{JSON.stringify($json)}}",
+              "type": "string"
+            },
+            {
+              "id": "ba446717-6d87-4b35-8b8f-6ccece223861",
+              "name": "Email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2096,
+        896
+      ],
+      "id": "91cf7feb-11e1-4b83-a3a9-e69c145d43f7",
+      "name": "Preparacion Data"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Clasificación de impacto según ahorro anual\nconst data = $json;\n\n// Validación básica\nconst ahorro = Number(data['Ahorro Anual']) || 0;\nlet nivel = 'BAJO';\n\n// Reglas de clasificación\nif (ahorro > 50000) {\n  nivel = 'ALTO';\n} else if (ahorro > 10000) {\n  nivel = 'MEDIO';\n}\n\n// Agrega la clasificación al objeto original\ndata.clasificacion = nivel;\n\n// Devuelve el objeto actualizado\nreturn { json: data };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1888,
+        896
+      ],
+      "id": "84cdbee0-4e2d-499e-89c2-4d08b822cc75",
+      "name": "Clasificar por Impacto"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/19NdppF9_rCOqW44VPDPuQhjuj2kgR4mX1Ix5wcFAuBo/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19NdppF9_rCOqW44VPDPuQhjuj2kgR4mX1Ix5wcFAuBo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Usuario",
+              "displayName": "Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Servicio",
+              "displayName": "Servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Procedimiento",
+              "displayName": "Procedimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Ahorro Anual",
+              "displayName": "Ahorro Anual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Datos JSON",
+              "displayName": "Datos JSON",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1520,
+        736
+      ],
+      "id": "427199be-2234-4053-96db-0be349c0403d",
+      "name": "DB_Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "xuYErYQbmQogAmCO",
+          "name": "Google Sheets"
+        }
       }
     },
     {
-      "name": "Save to CSV",
-      "type": "n8n-nodes-base.code",
       "parameters": {
-        "jsCode": "const fs = require('fs');\nconst csvLine = `${$json.id},${$json.timestamp},${$json.procedimiento},${$json.servicio || 'N/A'},${$json.usuario || 'Anónimo'},${$json.resultados.ahorroAnual},\"${JSON.stringify($json).replace(/\"/g, '\"\"')}\"\n`;\nfs.appendFileSync('/data/calculos.csv', csvLine);\nreturn { json: $json };"
+        "content": "#🔹 Descripción General\n\n## Este flujo toma datos provenientes de un webhook (solicitud AGE), procesa la información, genera un HTML con los datos formateados, crea un PDF y lo envía por correo electrónico al destinatario correspondiente.",
+        "height": 224,
+        "width": 3600,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3120,
+        -48
+      ],
+      "id": "3084dedc-f547-4fdf-982f-14e5bf431a5f",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 Function Node – Texto y Destinatario\n\nGenera el texto personalizado según la clasificación. Define la lista de destinatarios institucionales para cada nivel de impacto.",
+        "height": 208,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1888,
+        1072
+      ],
+      "id": "a73ef480-5ead-4c0e-982d-daf14b9f108d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "📄 Crear PDF\n\nConvierte el HTML generado en un archivo PDF.\n\nUsa la API de PDF.co.\n\nNombre del archivo:\n`informe_{{ $json.id }}.pdf`",
+        "height": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        672
+      ],
+      "id": "ccdfc1a6-2049-4251-9631-b25b42485ab5",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "✉️ Enviar Correo\n\nAdjunta el PDF generado y envía un correo de cortesía al solicitante.\n\nIncluye:\n- Asunto personalizado\n- Mensaje institucional\n- Firma del GobLab",
+        "height": 256,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        864
+      ],
+      "id": "1436d9fb-175b-4eea-ac84-1941b451987e",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "jsCode": "const entrada = $json;\n\n// Generar filas para cargas iniciales\nconst tablaIniciales = entrada.cargasIniciales?.map(carga => `\n  <tr>\n    <td>${carga.tipo}</td>\n    <td>${carga.cantidad}</td>\n    <td>${carga.coste} €</td>\n  </tr>\n`).join('') || '<tr><td colspan=\"3\">No se registraron cargas iniciales</td></tr>';\n\n// Generar filas para cargas finales\nconst tablaFinales = entrada.cargasFinales?.map(carga => `\n  <tr>\n    <td>${carga.tipo}</td>\n    <td>${carga.cantidad}</td>\n    <td>${carga.coste} €</td>\n  </tr>\n`).join('') || '<tr><td colspan=\"3\">No se registraron cargas finales</td></tr>';\n\n// Generar bloque de texto condicional\nconst bloqueTexto = entrada.resultados?.ahorroAnual < 0\n  ? `<p style=\"color: #d9534f;\"><strong>Este procedimiento genera un incremento de carga administrativa. Se recomienda revisión técnica.</strong></p>`\n  : `<p>${entrada.textoPersonalizado || ''}</p>`;\n\nconst html = `\n<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <title>Informe de ${entrada.procedimiento}</title>\n  <style>\n    body {\n      font-family: 'Segoe UI', Roboto, sans-serif;\n      padding: 40px;\n      background-color: #f9f9f9;\n      color: #333;\n    }\n    header {\n      display: flex;\n      align-items: center;\n      border-bottom: 2px solid #ff6d5a;\n      margin-bottom: 24px;\n      padding-bottom: 12px;\n    }\n    header img {\n      height: 60px;\n      margin-right: 20px;\n    }\n    h1 {\n      color: #ff6d5a;\n      font-size: 24px;\n      margin: 0;\n    }\n    h2 {\n      color: #606266;\n      font-size: 18px;\n      margin-top: 32px;\n      margin-bottom: 12px;\n    }\n    h3 {\n      color: #409eff;\n      font-size: 16px;\n      margin-top: 24px;\n      margin-bottom: 8px;\n    }\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      margin-top: 12px;\n    }\n    th, td {\n      border: 1px solid #ccc;\n      padding: 10px;\n      text-align: left;\n      font-size: 14px;\n    }\n    th {\n      background-color: #f5f5f5;\n    }\n    .footer {\n      margin-top: 40px;\n      font-size: 12px;\n      color: #999;\n      text-align: center;\n    }\n    .firma {\n      margin-top: 60px;\n      font-size: 14px;\n      color: #333;\n    }\n    .firma-linea {\n      margin-top: 40px;\n      border-top: 1px solid #ccc;\n      width: 300px;\n    }\n  </style>\n</head>\n<body>\n  <header>\n    <img src=\"https://goblab.org/wp-content/uploads/2023/03/logo-goblab.png\" alt=\"Logo GoBLab\" />\n    <h1>${entrada.procedimiento}</h1>\n  </header>\n\n  <h2>Datos del Solicitante</h2>\n  <table>\n    <tr><th>Usuario</th><td>${entrada.usuario}</td></tr>\n    <tr><th>Correo</th><td>${entrada.email}</td></tr>\n    <tr><th>Servicio</th><td>${entrada.servicio}</td></tr>\n    <tr><th>ID de Solicitud</th><td>${entrada.id}</td></tr>\n    <tr><th>Clasificación de Impacto</th><td>${entrada.clasificacion}</td></tr>\n    <tr><th>Ahorro anual estimado</th><td>${entrada.resultados?.ahorroAnual || ''} €</td></tr>\n    <tr><th>Reducción estimada</th><td>${entrada.resultados?.porcentajeReduccion || ''} %</td></tr>\n  </table>\n\n  <h3>Cargas Iniciales</h3>\n  <table>\n    <tr><th>Tipo</th><th>Cantidad</th><th>Coste</th></tr>\n    ${tablaIniciales}\n  </table>\n\n  <h3>Cargas Finales</h3>\n  <table>\n    <tr><th>Tipo</th><th>Cantidad</th><th>Coste</th></tr>\n    ${tablaFinales}\n  </table>\n\n  <h3>Texto Personalizado</h3>\n  ${bloqueTexto}\n\n  <div class=\"firma\">\n    <p>Firma del responsable institucional:</p>\n    <div class=\"firma-linea\"></div>\n  </div>\n\n  <div class=\"footer\">\n    Informe generado automáticamente por la Calculadora AGE – GoBLab Gran Canaria\n  </div>\n</body>\n</html>\n`;\n\nreturn [\n  {\n    json: {\n      ...entrada,\n      html\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1152,
+        992
+      ],
+      "id": "7c223c87-0542-492d-917e-175ead478b19",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=Informe de Simplificación Administrativa – Solicitud AGE",
+        "message": "=<p>Estimado/a,</p>\n\n<p>Gracias por utilizar la <strong>Calculadora de Cargas Administrativas AGE</strong>.</p>\n\n<p>Adjunto encontrará el informe generado a partir de su solicitud, conforme al <em>Método Simplificado</em> aprobado por el Consejo de Ministros.</p>\n\n<p>Este documento refleja el análisis técnico del ahorro administrativo estimado, y puede ser utilizado para respaldar procesos de mejora institucional.</p>\n\n<p>Si desea realizar otra simulación o consultar más información, puede acceder nuevamente a la herramienta desde el siguiente enlace:</p>\n\n<p><a href=\"https://calculadoragrancanariagoblab.netlify.app/\" target=\"_blank\">calculadoragrancanariagoblab.netlify.app</a></p>\n\n<p>Atentamente,<br>\nEquipo GoBLab Gran Canaria</p>",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "=pdf"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        1296
+      ],
+      "id": "b7a856e1-6227-438c-b4b8-de1241d573fb",
+      "name": "Envio de Correo",
+      "webhookId": "d13e6b7c-07a5-4095-8f9c-3d07144acc73",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "8QL1agxasIy9RAiN",
+          "name": "Gmail"
+        }
       }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -784,
+        1296
+      ],
+      "id": "3f580b03-c048-4c7e-9753-5f1ad79faa8f",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const entrada = $json || {};\nconst datos = JSON.parse(entrada[\"Datos JSON\"] || \"{}\");\n\n// normalizar email\nconst rawEmail = entrada.Email || entrada.email || datos.email || '';\nconst normalizedEmail = rawEmail ? String(rawEmail).trim().toLowerCase() : '';\n\nreturn {\n  json: {\n    usuario: entrada.Usuario || datos.usuario || '',\n    email: normalizedEmail,\n    servicio: entrada.Servicio || datos.servicio || '',\n    procedimiento: entrada.Procedimiento || datos.procedimiento || '',\n    id: entrada.ID || entrada.id || datos.id || '',\n    clasificacion: entrada.clasificacion || datos.clasificacion || '',\n    textoPersonalizado: entrada.textoPersonalizado || datos.textoPersonalizado || '',\n    resultados: datos.resultados || {},\n    cargasIniciales: datos.cargasIniciales || [],\n    cargasFinales: datos.cargasFinales || [],\n    // ⬇️ nuevo: pasa la lista construida en el Function Node\n    recipients: entrada.recipients || datos.recipients || normalizedEmail\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        992
+      ],
+      "id": "30602a70-9845-48ad-b135-3ef69caf1b42",
+      "name": "Normalizacion y Estructuracion de Datos"
+    },
+    {
+      "parameters": {
+        "content": "🧼 Normalización y Estructuración\n\nReconstruye el objeto final con todos los campos necesarios para el HTML. Asegura consistencia en nombres y formato.\n\n",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1472,
+        1184
+      ],
+      "id": "2a86dbf1-41c4-4660-bc95-75bfedae3de0",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "height": 592,
+        "width": 1072,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        880
+      ],
+      "id": "4a0c4aa1-ab85-46f2-b731-b491fcf7b589",
+      "name": "Sticky Note9"
     }
-  ]
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validacion Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear PDF en PDF.co": {
+      "main": [
+        [
+          {
+            "node": "Descargar PDF desde URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar PDF desde URL": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function Node": {
+      "main": [
+        [
+          {
+            "node": "Normalizacion y Estructuracion de Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar PDF": {
+      "main": [
+        [
+          {
+            "node": "Crear PDF en PDF.co",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validacion Data": {
+      "main": [
+        [
+          {
+            "node": "Preparacion Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparacion Data": {
+      "main": [
+        [
+          {
+            "node": "Clasificar por Impacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar por Impacto": {
+      "main": [
+        [
+          {
+            "node": "DB_Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Function Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Preparar PDF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Envio de Correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizacion y Estructuracion de Datos": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0d9a0645-9ea7-4426-b9f4-2e0c78e66258",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c82b6d82c5e68698f04eb90aff26f6d518213142c432a723c8b2a1070d31f483"
+  },
+  "id": "FxRtTpLafq8i18qp",
+  "tags": []
 }
