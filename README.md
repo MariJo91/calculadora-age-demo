@@ -8,6 +8,8 @@ Su objetivo es **medir y visualizar el impacto económico** de la simplificació
 
 👉 Demo pública: https://calculadoragrancanariagoblab.netlify.app
 
+<img width="875" height="600" alt="Image" src="https://github.com/user-attachments/assets/9cdf354b-271a-4507-b22b-f91b60dce3d6" />
+
 ---
 
 ## 🎯 Objetivo del proyecto  
@@ -37,28 +39,31 @@ Su objetivo es **medir y visualizar el impacto económico** de la simplificació
 
 ## 📂 Estructura del repositorio
 
+```
 calculadora-age-demo/
 ├── frontend/
-│ ├── index.html # Calculadora principal
-│ ├── dashboard.html # Dashboard institucional
-│ ├── about.html # Información metodológica
-│ ├── css/styles.css # Estilos personalizados
-│ ├── js/
-│ │ ├── calculadora.js # Lógica principal de cálculo
-│ │ ├── dashboard.js # Visualización de métricas
-│ │ └── utils.js # Funciones auxiliares
-│ └── assets/ # Logo e insumos
-│
+│   ├── index.html                  # Calculadora principal
+│   ├── dashboard.html              # Dashboard institucional
+│   ├── about.html                  # Información metodológica
+│   ├── css/styles.css              # Estilos personalizados
+│   ├── js/
+│   │   ├── calculadora.js          # Lógica principal de cálculo
+│   │   ├── dashboard.js            # Visualización de métricas
+│   │   └── utils.js                # Funciones auxiliares
+│   └── assets/                     # Logo e insumos
+
 ├── n8n/
-│ ├── workflows/
-│ │ ├── Calculadora Institucional AGE goblab.json
-│ │ └── Dashboard Institucional AGE goblab.json
-│ └── docker-compose.yml # Orquestación n8n
-│
+│   ├── workflows/
+│   │   ├── Calculadora Institucional AGE goblab.json
+│   │   └── Dashboard Institucional AGE goblab.json
+│   └── docker-compose.yml         # Orquestación n8n
+
 ├── docs/
-│ ├── README.md # Este archivo
-│ ├── API.md # Referencia técnica
-│ └── TROUBLESHOOTING.md # Guía de soporte
+│   ├── README.md                   # Este archivo
+│   ├── API.md                      # Referencia técnica
+│   └── TROUBLESHOOTING.md          # Guía de soporte
+
+```
 
 ---
 
@@ -97,7 +102,7 @@ Flujo para servir métricas dinámicas en JSON al dashboard web:
 
 ## 📊 Flujos n8n
 
-![Workflows Calculadora y Dashboard](workflows_calculadora_dashboard.png)
+![Workflows Calculadora y Dashboard]
 
 Flujo Principal Calculadora AGE
 <img width="1307" height="482" alt="Image" src="https://github.com/user-attachments/assets/98478262-d307-4896-bf1a-bf854da5e079" />
