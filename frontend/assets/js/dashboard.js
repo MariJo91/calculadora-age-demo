@@ -1,28 +1,11 @@
 // Archivo: dashboard.js
-// Dashboard básico con Chart.js
+// Dashboard institucional conectado a n8n + Google Sheets
+
 async function loadDashboard() {
   try {
-    // Simulación de datos (en producción, fetch al endpoint de n8n)
-    const data = {
-      total: 12,
-      ahorroTotal: 45230,
-      fechas: ['01/08', '02/08', '03/08', '04/08', '05/08', '06/08', '07/08'],
-      ahorrosPorDia: [5000, 6000, 4000, 7000, 3000, 5000, 8000],
-      topServicios: [
-        { nombre: 'Catastro', ahorro: 15000 },
-        { nombre: 'Licencias Urbanísticas', ahorro: 12000 },
-        { nombre: 'Registro Civil', ahorro: 8000 },
-        { nombre: 'Sanidad', ahorro: 6000 },
-        { nombre: 'Educación', ahorro: 4200 }
-      ],
-      ultimosAnalisis: [
-        { procedimiento: 'Solicitud licencia urbanística', ahorro: 4500 },
-        { procedimiento: 'Trámite catastral', ahorro: 5000 },
-        { procedimiento: 'Registro nacimiento', ahorro: 3000 },
-        { procedimiento: 'Solicitud permiso obras', ahorro: 7000 },
-        { procedimiento: 'Inscripción escuela', ahorro: 4000 }
-      ]
-    };
+    // Consulta al endpoint de n8n
+    const response = await fetch('https://n8n.icc-e.org/webhook/dashboard');
+    const data = await response.json();
 
     // Métricas básicas
     document.getElementById('total-analisis').textContent = data.total;
@@ -66,21 +49,32 @@ async function loadDashboard() {
       topContainer.appendChild(div);
     });
 
-    // Últimos análisis
+    // Últimos análisis (si el campo existe)
     const ultimosList = document.getElementById('ultimos-analisis');
     ultimosList.innerHTML = '';
-    data.ultimosAnalisis.forEach(item => {
-      const li = document.createElement('li');
-      li.classList.add('list-group-item');
-      li.textContent = `${item.procedimiento} - €${item.ahorro.toLocaleString('es-ES')}`;
-      ultimosList.appendChild(li);
-    });
+    if (data.ultimosAnalisis) {
+      data.ultimosAnalisis.forEach(item => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.textContent = `${item.procedimiento} - €${item.ahorro.toLocaleString('es-ES')}`;
+        ultimosList.appendChild(li);
+      });
+    }
+
+    // Última actualización (opcional)
+    if (data.ultimaActualizacion) {
+      document.getElementById('ultima-actualizacion').textContent = data.ultimaActualizacion;
+    }
 
   } catch (error) {
     console.error('Error cargando dashboard:', error);
+    const status = document.getElementById('status-message');
+    if (status) {
+      status.textContent = '⚠️ No se pudo cargar el dashboard institucional.';
+    }
   }
 }
 
-// Auto-refresh cada 5 minutos
+// Carga inicial + auto-refresh cada 5 minutos
 loadDashboard();
 setInterval(loadDashboard, 5 * 60 * 1000);
