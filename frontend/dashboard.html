@@ -20,7 +20,7 @@
       color: white;
     }
     header img {
-      max-height: 50px;
+      max-height: 60px;
       margin-bottom: 10px;
     }
     .metric-card {
@@ -39,9 +39,9 @@
       font-size: 2rem;
       color: #003366;
     }
-    .list-group-item {
-      font-size: 1rem;
-      padding: 8px 12px;
+    .badge {
+      font-size: 0.8rem;
+      margin-left: 8px;
     }
     footer {
       background-color: #f0f0f0;
@@ -54,56 +54,56 @@
   </style>
 </head>
 <body>
-
   <header>
-    <img 
-      src="https://raw.githubusercontent.com/MariJo91/calculadora-age-demo/refs/heads/main/frontend/assets/Logo%20GobLab.png" 
-      alt="Logo institucional GobLab Gran Canaria" 
-    />
-    <h1>Dashboard Institucional</h1>
-    <p class="mt-2">Seguimiento de solicitudes y ahorro administrativo</p>
+    <img src="https://raw.githubusercontent.com/MariJo91/calculadora-age-demo/main/frontend/assets/Logo%20GobLab.png" alt="Logo institucional GobLab Gran Canaria" />
+    <h1 class="mb-0">Dashboard Institucional</h1>
+    <small>Seguimiento de solicitudes y ahorro administrativo</small>
   </header>
 
   <main class="container my-4">
+    <div class="text-end mb-3">
+      <button id="btn-recargar" class="btn btn-outline-primary">
+        <i class="fas fa-sync-alt me-2"></i>Actualizar ahora
+      </button>
+    </div>
 
     <div class="metric-card">
-      <div class="metric-title">Total de análisis realizados</div>
+      <div class="metric-title"><i class="fas fa-chart-bar me-2 text-primary"></i> Total de análisis realizados</div>
       <div class="metric-value" id="total-analisis">—</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-title">Ahorro acumulado total</div>
+      <div class="metric-title"><i class="fas fa-piggy-bank me-2 text-success"></i> Ahorro acumulado total</div>
       <div class="metric-value text-success" id="ahorro-total">—</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-title">Gráfico temporal de ahorro</div>
-      <canvas id="grafico-temporal" height="100"></canvas>
+      <div class="metric-title"><i class="fas fa-calendar-alt me-2 text-info"></i> Gráfico temporal de ahorro</div>
+      <canvas id="grafico-temporal" height="60" style="max-width: 100%;"></canvas>
     </div>
 
     <div class="metric-card">
-      <div class="metric-title">Top 5 servicios por ahorro</div>
+      <div class="metric-title"><i class="fas fa-star me-2 text-warning"></i> Top 5 servicios por ahorro</div>
       <div id="top-servicios"></div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-title">Últimos 10 análisis registrados</div>
+      <div class="metric-title"><i class="fas fa-history me-2 text-secondary"></i> Últimos 10 análisis registrados</div>
       <ul id="ultimos-analisis" class="list-group"></ul>
     </div>
 
     <div class="metric-card">
-      <div class="metric-title">Última actualización</div>
+      <div class="metric-title"><i class="fas fa-clock me-2 text-muted"></i> Última actualización</div>
       <div class="metric-value text-muted" id="ultima-actualizacion">—</div>
     </div>
 
     <div id="status-message" class="text-center text-danger fw-semibold mt-4"></div>
-
   </main>
 
   <footer>
     © 2025 Cabildo de Gran Canaria · Generado por GobLab · Datos extraídos de solicitudes en Google Sheets
   </footer>
 
-  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/dashboard.js" defer></script>
 </body>
 </html>

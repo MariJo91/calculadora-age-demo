@@ -2,16 +2,19 @@
 // Dashboard institucional conectado a n8n + Google Sheets
 
 async function loadDashboard() {
+  const status = document.getElementById('status-message');
+  status.textContent = '🔄 Cargando datos...';
+
   try {
-    // Consulta al endpoint de n8n
     const response = await fetch('https://n8n.icc-e.org/webhook/dashboard');
     const data = await response.json();
 
     // Métricas básicas
     document.getElementById('total-analisis').textContent = data.total;
     document.getElementById('ahorro-total').textContent = '€' + data.ahorroTotal.toLocaleString('es-ES');
+    document.getElementById('ultima-actualizacion').textContent = data.ultimaActualizacion || '—';
 
-    // Gráfico temporal con Chart.js
+    // Gráfico temporal
     const ctx = document.getElementById('grafico-temporal').getContext('2d');
     new Chart(ctx, {
       type: 'line',
@@ -49,32 +52,40 @@ async function loadDashboard() {
       topContainer.appendChild(div);
     });
 
-    // Últimos análisis (si el campo existe)
+    // Últimos análisis
     const ultimosList = document.getElementById('ultimos-analisis');
     ultimosList.innerHTML = '';
-    if (data.ultimosAnalisis) {
-      data.ultimosAnalisis.forEach(item => {
-        const li = document.createElement('li');
-        li.classList.add('list-group-item');
-        li.textContent = `${item.procedimiento} - €${item.ahorro.toLocaleString('es-ES')}`;
-        ultimosList.appendChild(li);
-      });
-    }
+    data.ultimosAnalisis?.forEach(item => {
+      const li = document.createElement('li');
+      li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+      li.innerHTML = `
+        <span>${item.procedimiento}</span>
+        <span>
+          €${item.ahorro.toLocaleString('es-ES')}
+          <span class="badge bg-${item.clasificacion === 'ALTO' ? 'danger' : item.clasificacion === 'MEDIO' ? 'warning' : 'success'} ms-2">
+            ${item.clasificacion}
+          </span>
+        </span>
+      `;
+      ultimosList.appendChild(li);
+    });
 
-    // Última actualización (opcional)
-    if (data.ultimaActualizacion) {
-      document.getElementById('ultima-actualizacion').textContent = data.ultimaActualizacion;
-    }
+    status.textContent = ''; // Limpia mensaje de carga
 
   } catch (error) {
     console.error('Error cargando dashboard:', error);
-    const status = document.getElementById('status-message');
-    if (status) {
-      status.textContent = '⚠️ No se pudo cargar el dashboard institucional.';
-    }
+    status.textContent = '⚠️ No se pudo cargar el dashboard institucional.';
   }
 }
 
 // Carga inicial + auto-refresh cada 5 minutos
-loadDashboard();
-setInterval(loadDashboard, 5 * 60 * 1000);
+document.addEventListener('DOMContentLoaded', () => {
+  loadDashboard();
+  setInterval(loadDashboard, 5 * 60 * 1000);
+
+  // Botón de recarga manual
+  const btnRecargar = document.getElementById('btn-recargar');
+  if (btnRecargar) {
+    btnRecargar.addEventListener('click', loadDashboard);
+  }
+});
