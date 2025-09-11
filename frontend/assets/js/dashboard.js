@@ -58,15 +58,18 @@ async function loadDashboard() {
     data.ultimosAnalisis?.forEach(item => {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-      li.innerHTML = `
+    li.innerHTML = `
+      <div>
+       <strong>${item.servicio}</strong><br />
         <span>${item.procedimiento}</span>
-        <span>
-          €${item.ahorro.toLocaleString('es-ES')}
-          <span class="badge bg-${item.clasificacion === 'ALTO' ? 'danger' : item.clasificacion === 'MEDIO' ? 'warning' : 'success'} ms-2">
-            ${item.clasificacion}
-          </span>
+      </div>
+      <div>
+         €${item.ahorro.toLocaleString('es-ES')}
+        <span class="badge bg-${item.clasificacion === 'ALTO' ? 'danger' : item.clasificacion === 'MEDIO' ? 'warning' : 'success'} ms-2">
+          ${item.clasificacion}
         </span>
-      `;
+      </div>
+    `;
       ultimosList.appendChild(li);
     });
 
