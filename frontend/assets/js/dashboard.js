@@ -77,12 +77,12 @@ async function loadDashboard() {
 
   } catch (error) {
     console.error('Error cargando dashboard:', error);
-    status.textContent = '⚠️ No se pudo cargar el dashboard institucional.';
+    status.textContent = ''; // Limpia el mensaje de error si todo salió bien
   }
 }
 
 // Carga inicial + auto-refresh cada 5 minutos
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   loadDashboard();
   setInterval(loadDashboard, 5 * 60 * 1000);
 
