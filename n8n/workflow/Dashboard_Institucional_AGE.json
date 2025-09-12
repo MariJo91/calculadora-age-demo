@@ -1,0 +1,142 @@
+{
+  "name": "Dashboard Institucional AGE goblab",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dashboard",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -256,
+        -32
+      ],
+      "id": "5787a53e-58a1-49af-b68f-3e42f7727c03",
+      "name": "Webhook1",
+      "webhookId": "b6ecccf1-3b35-4072-b4b7-6c1a0e32bebd"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items.map(item => item.json);\n\n// Total de análisis\nconst total = rows.length;\n\n// Ahorro acumulado\nconst ahorroTotal = rows.reduce((sum, r) => sum + (parseFloat(r['Ahorro Anual']) || 0), 0);\n\n// Agrupar por fecha\nconst ahorrosPorDia = {};\nconst fechas = [];\nrows.forEach(r => {\n  const fecha = r.Timestamp?.split('T')[0]; // formato YYYY-MM-DD\n  if (fecha) {\n    fechas.push(fecha);\n    ahorrosPorDia[fecha] = (ahorrosPorDia[fecha] || 0) + parseFloat(r['Ahorro Anual'] || 0);\n  }\n});\nconst fechasUnicas = [...new Set(fechas)].sort();\nconst serie = fechasUnicas.map(f => ahorrosPorDia[f] || 0);\n\n// Top servicios por ahorro\nconst servicios = {};\nrows.forEach(r => {\n  const nombre = r.Servicio || 'Sin servicio';\n  servicios[nombre] = (servicios[nombre] || 0) + parseFloat(r['Ahorro Anual'] || 0);\n});\nconst topServicios = Object.entries(servicios)\n  .map(([nombre, ahorro]) => ({ nombre, ahorro }))\n  .sort((a, b) => b.ahorro - a.ahorro)\n  .slice(0, 5);\n\n// Últimos 10 análisis registrados (ahora con servicio y clasificación)\nconst ultimosAnalisis = rows\n  .sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))\n  .slice(0, 10)\n  .map(r => ({\n    servicio: r.Servicio || 'Sin servicio',\n    procedimiento: r.Procedimiento || 'Sin descripción',\n    ahorro: parseFloat(r['Ahorro Anual'] || 0),\n    clasificacion: (r.Clasificación || r.clasificacion || 'BAJO').toUpperCase()\n  }));\n\n// Clasificación de impacto\nconst positivos = rows.filter(r => parseFloat(r['Ahorro Anual']) > 0).length;\nconst negativos = rows.filter(r => parseFloat(r['Ahorro Anual']) < 0).length;\n\n// Fecha de última actualización\nconst ultimaActualizacion = new Date().toISOString();\n\n// Resultado final\nreturn [\n  {\n    json: {\n      total,\n      ahorroTotal,\n      fechas: fechasUnicas,\n      ahorrosPorDia: serie,\n      topServicios,\n      ultimosAnalisis,\n      ultimaActualizacion,\n      impacto: {\n        positivos,\n        negativos,\n        neto: ahorroTotal\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -32
+      ],
+      "id": "e3d5800f-26df-4a10-bb21-9071cfdc732d",
+      "name": "Procesar Metricas"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/19NdppF9_rCOqW44VPDPuQhjuj2kgR4mX1Ix5wcFAuBo/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19NdppF9_rCOqW44VPDPuQhjuj2kgR4mX1Ix5wcFAuBo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "b06db1ed-84eb-4942-b1b1-cc8757822d2f",
+      "name": "Leer Filas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "xuYErYQbmQogAmCO",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        368,
+        -32
+      ],
+      "id": "b90a0ab5-26a8-4de5-9cb3-c9100de162df",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "content": "# Dashboard Institucional - API JSON",
+        "height": 336,
+        "width": 1520,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -128
+      ],
+      "id": "4f925415-5050-4f53-8cb9-3dfab115e722",
+      "name": "Sticky Note11"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Leer Filas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Metricas": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Filas": {
+      "main": [
+        [
+          {
+            "node": "Procesar Metricas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e4fa2d3e-83d2-412a-a8b5-39ecf5236576",
+  "meta": {
+    "instanceId": "c82b6d82c5e68698f04eb90aff26f6d518213142c432a723c8b2a1070d31f483"
+  },
+  "id": "2GVQKTzx8NuANw7F",
+  "tags": []
+}
